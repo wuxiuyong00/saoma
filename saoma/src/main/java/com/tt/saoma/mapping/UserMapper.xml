@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tt.saoma.dao.IUserDao">
+
+	<resultMap type="com.tt.saoma.domain.ScanUserInfo" id="UserResult">
+		<id column="userid" property="userId" />
+		<result column="compane" property="company" />
+		<result column="username" property="userName" />
+		<result column="secret" property="secret" />
+		<result column="createtime" property="creatTime" />
+		<result column="creater" property="creater" />
+		<result column="updatetime" property="updateTime" />
+		<result column="updater" property="updater" />
+		<result column="isvalid" property="isValid" />
+		<result column="name" property="name" />
+		<result column="phone" property="phone" />
+	</resultMap>
+
+	<select id="getUserById" resultMap="UserResult">
+		SELECT * FROM scanuserinfo where userid = #{id}
+	</select>
+	
+	<select id="getUserByName" resultMap="UserResult">
+		SELECT * FROM scanuserinfo where username = #{username}
+	</select>
+	
+	<update id="updateUserPwd">
+		UPDATE scanuserinfo SET secret = #{password},updater = #{username},updatetime=now() where username = #{username}
+	</update>
+
+</mapper>

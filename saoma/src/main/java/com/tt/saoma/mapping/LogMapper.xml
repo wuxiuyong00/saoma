@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tt.saoma.dao.ILogDao">
+
+	<resultMap type="com.tt.saoma.domain.ScanLogInfo" id="LogResult">
+		<id column="id" property="id" />
+		<result column="userid" property="userId" />
+		<result column="deviceid" property="deviceId" />
+		<result column="devicegroupid" property="deviceGroupId" />
+		<result column="time" property="time" />
+		<result column="descrip" property="descrip" />
+		<result column="message" property="message" />
+		<result column="unusual" property="unusual" />
+	</resultMap>
+
+	<select id="getLogByDeviceId" resultMap="LogResult">
+		SELECT * FROM scanloginfo where devicegroupid is not NULL 
+		and deviceId = #{deviceId} ORDER BY time desc LIMIT 1
+	</select>
+	
+	<select id="getTenLogCountByDUId" resultType="java.lang.Integer">
+		SELECT count(1) FROM scanloginfo where devicegroupid is not null
+		<if test="deviceId != null and deviceId != ''">
+		 and deviceId = #{deviceId}
+		</if>
+		<if test="userId != null and userId != ''">
+		 and userId = #{userId}
+		</if>
+		<![CDATA[and time >= CURRENT_TIMESTAMP - INTERVAL 10 MINUTE]]>
+	</select>
+	
+	<update id="updateLastLogByUDId">
+		UPDATE scanloginfo SET message = #{message}
+		<if test="unusual != null and unusual != ''">
+		 ,unusual = #{unusual} 
+		</if>
+		where userid = #{userId} and deviceid = #{deviceId} ORDER BY time desc LIMIT 1
+	</update>
+	
+	<select id="getLogByUserId" resultMap="LogResult">
+		SELECT * FROM scanloginfo l where l.userid = #{userId} ORDER BY l.time desc
+	</select>
+	
+	<insert id="saveLog">
+		INSERT INTO scanloginfo (id,userid,deviceid,devicegroupid,time,descrip) VALUES (UUID(),#{userId},#{deviceId},#{deviceGroupId},NOW(),#{descrip})
+	</insert>
+
+</mapper>

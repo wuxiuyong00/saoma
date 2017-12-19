@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tt.saoma.dao.IDeviceDao">
+
+	<resultMap type="com.tt.saoma.domain.ScanDeviceInfo" id="DeviceResult">
+		<id column="deviceid" property="deviceId" />
+		<result column="devicename" property="deviceName" />
+		<result column="descrip" property="descrip" />
+		<result column="createtime" property="createTime" />
+		<result column="creater" property="creater" />
+		<result column="updatetime" property="updateTime" />
+		<result column="updater" property="updater" />
+		<result column="isvalid" property="isvalid" />
+	</resultMap>
+
+	<select id="getDeviceById" resultMap="DeviceResult">
+		SELECT * FROM scandeviceinfo where deviceId = #{deviceId}
+	</select>
+	
+	<select id="getDevicePartNum" resultType="java.lang.String">
+		select p.num from scandevicepartinfo p where p.devicepartid in 
+		(select i.devicepartid from scandevicegroupinfo i where i.deviceid = #{deviceId}) 
+		ORDER BY p.num ASC
+	</select>
+	
+	<resultMap type="com.tt.saoma.domain.ScanDevicePartInfo" id="DevicePartResult">
+		<id column="devicepartid" property="devicePartId" />
+		<result column="devicepartname" property="devicePartName" />
+		<result column="staticdescrip" property="staticDescrip" />
+		<result column="num" property="num" />
+		<result column="createtime" property="createTime" />
+		<result column="creater" property="creater" />
+		<result column="updatetime" property="updateTime" />
+		<result column="updater" property="updater" />
+		<result column="isvalid" property="isvalid" />
+	</resultMap>
+	
+	<select id="getDevicePartDescrip" resultMap="DevicePartResult">
+		select * from scandevicepartinfo p where p.devicepartid in 
+		(select i.devicepartid from scandevicegroupinfo i where i.deviceid = #{deviceId}) AND p.num = #{num}
+	</select>
+
+</mapper>
